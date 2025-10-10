@@ -5,7 +5,7 @@ import 'package:markdown_widget/markdown_widget.dart';
 class AppTheme {
   AppTheme._();
 
-  static const Color themeColor = Colors.purpleAccent;
+  static const Color themeColor = Colors.lightBlueAccent;
 
   /// 静态全局主题
   static final ThemeData themeData = ThemeData(

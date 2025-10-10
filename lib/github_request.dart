@@ -9,7 +9,7 @@ import 'package:markdown_widget/markdown_widget.dart';
 
 import 'theme.dart';
 
-/// 需搭配 https://github.com/madderscientist/issueStat 使用
+/// 需搭配 https://github.com/zytx121/issueStat 使用
 /// 形如: {
 ///     "total": 10,
 ///     "labels": {

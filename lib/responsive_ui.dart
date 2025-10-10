@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'lazy_notifier.dart';
@@ -30,7 +31,7 @@ class _ResponsiveUIState extends State<ResponsiveUI> {
 
   ////!====== 需要修改的 =====!////
   late final userInfoSide = UserInfoSide(
-    user: 'madderscientist',
+    user: 'zytx121',
     sideConfig: sideConfig,
   ); // 个人信息侧栏
   // 改顺序只需要改index

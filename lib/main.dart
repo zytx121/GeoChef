@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'GratisHub Issue Blog',
+      title: 'GeoChef',
       // 静态主题：颜色、组件样式等
       theme: AppTheme.themeData,
       // 动态层：只覆盖 textTheme，窗口 resize 时才会重新算
@@ -33,49 +33,57 @@ class MyApp extends StatelessWidget {
             ).clamp(minScaleFactor: 0.1, maxScaleFactor: 1.15),
           ),
           child: Theme(
-            data: Theme.of(
-              context,
-            ).copyWith(textTheme: AppTheme.responsiveTextTheme(context)),
+            data: AppTheme.themeData.copyWith(
+              textTheme: AppTheme.responsiveTextTheme(context),
+            ),
             child: child!,
           ),
         );
       },
       home: Scaffold(
         resizeToAvoidBottomInset: false,
-        // 仅当有背景图 / html设置了background 才用透明
-        backgroundColor: Colors.white,  // 不然在windows下是黑色
-        body: SafeArea(
-          // 手机上避开刘海等区域
-          child: Center(
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(
-                maxWidth: AppTheme.maxPageWidth,
-              ),
-              child: Container(
-                decoration: BoxDecoration(
-                  // 充当屏幕过宽的分割线
-                  boxShadow: [
-                    const BoxShadow(
-                      color: Colors.black12,
-                      blurRadius: 12,
-                      spreadRadius: 1,
+        body: Stack(
+          children: [
+            Image.asset(
+              'assets/bg.png', // 替换为你的图片路径
+              fit: BoxFit.cover, // 图片填充方式
+              width: double.infinity,
+              height: double.infinity,
+            ),
+            SafeArea(
+              // 手机上避开刘海等区域
+              child: Center(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(
+                    maxWidth: AppTheme.maxPageWidth,
+                  ),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      // 充当屏幕过宽的分割线
+                      boxShadow: [
+                        const BoxShadow(
+                          color: Colors.black12,
+                          blurRadius: 12,
+                          spreadRadius: 1,
+                        ),
+                      ],
+                      // 主内容区域的渐变背景色
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          AppTheme.themeData.scaffoldBackgroundColor,
+                          Colors.white,
+                        ],
+                        stops: const [0.0, 0.6],
+                      ),
                     ),
-                  ],
-                  // 主内容区域的渐变背景色
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      Theme.of(context).scaffoldBackgroundColor,
-                      Colors.white,
-                    ],
-                    stops: const [0.0, 0.6],
+                    child: ResponsiveUI(),
                   ),
                 ),
-                child: ResponsiveUI(),
               ),
             ),
-          ),
+          ],
         ),
       ),
     );

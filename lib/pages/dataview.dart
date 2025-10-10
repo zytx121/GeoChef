@@ -189,32 +189,27 @@ class _DataviewPageState extends State<DataviewPage>
               }
               return false;
             },
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 8.0,
-                vertical: 3.0,
+            child: ListView.separated(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              controller: _listViewController,
+              physics: const BouncingScrollPhysics(
+                parent: AlwaysScrollableScrollPhysics(),
               ),
-              child: ListView.separated(
-                controller: _listViewController,
-                physics: const BouncingScrollPhysics(
-                  parent: AlwaysScrollableScrollPhysics(),
-                ),
-                // 如果在加载中，则多一个item显示加载中
-                itemCount: issues.length + (issueRequester.isLoading ? 1 : 0),
-                separatorBuilder: (context, index) {
-                  return const Divider(height: 1, thickness: 0.5, indent: 16);
-                },
-                itemBuilder: (context, index) {
-                  if (index < issues.length) {
-                    return buildCard(context, issues[index]);
-                  } else {
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 10.0),
-                      child: Center(child: CircularProgressIndicator()),
-                    );
-                  }
-                },
-              ),
+              // 如果在加载中，则多一个item显示加载中
+              itemCount: issues.length + (issueRequester.isLoading ? 1 : 0),
+              separatorBuilder: (context, index) {
+                return const Divider(height: 1, thickness: 0.5, indent: 16);
+              },
+              itemBuilder: (context, index) {
+                if (index < issues.length) {
+                  return buildCard(context, issues[index]);
+                } else {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 10.0),
+                    child: Center(child: CircularProgressIndicator()),
+                  );
+                }
+              },
             ),
           ),
         );
@@ -408,31 +403,29 @@ class _DataviewPageState extends State<DataviewPage>
           SizedBox(height: _searchTextSize / 3),
           Expanded(
             child: SingleChildScrollView(
-              child: Padding(
-                padding: EdgeInsets.symmetric(vertical: _searchTextSize / 3),
-                child: ValueListenableBuilder<List<bool>>(
-                  valueListenable: selectedLabels,
-                  builder: (context, selected, _) {
-                    if (labels == null) return const SizedBox.shrink();
-                    return Wrap(
-                      spacing: 5,
-                      runSpacing: 3,
-                      children: List.generate(labels!.length, (i) {
-                        final label = labels![i];
-                        final isSelected = (selected.length > i)
-                            ? selected[i]
-                            : false;
-                        return GestureDetector(
-                          onTap: () {
-                            selectedLabels.value[i] = !selectedLabels.value[i];
-                            selectedLabels.notify();
-                          },
-                          child: label.build(context, selected: isSelected),
-                        );
-                      }),
-                    );
-                  },
-                ),
+              padding: EdgeInsets.symmetric(vertical: _searchTextSize / 3),
+              child: ValueListenableBuilder<List<bool>>(
+                valueListenable: selectedLabels,
+                builder: (context, selected, _) {
+                  if (labels == null) return const SizedBox.shrink();
+                  return Wrap(
+                    spacing: 5,
+                    runSpacing: 3,
+                    children: List.generate(labels!.length, (i) {
+                      final label = labels![i];
+                      final isSelected = (selected.length > i)
+                          ? selected[i]
+                          : false;
+                      return GestureDetector(
+                        onTap: () {
+                          selectedLabels.value[i] = !selectedLabels.value[i];
+                          selectedLabels.notify();
+                        },
+                        child: label.build(context, selected: isSelected),
+                      );
+                    }),
+                  );
+                },
               ),
             ),
           ),

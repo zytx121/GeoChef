@@ -89,13 +89,13 @@ BEGIN
     BEGIN
         BLOCK "040904e4"
         BEGIN
-            VALUE "CompanyName", "com.madderscientist" "\0"
-            VALUE "FileDescription", "gratishub" "\0"
+            VALUE "CompanyName", "com.zytx121" "\0"
+            VALUE "FileDescription", "geochef" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "gratishub" "\0"
-            VALUE "LegalCopyright", "Copyright (C) 2025 com.madderscientist. All rights reserved." "\0"
-            VALUE "OriginalFilename", "gratishub.exe" "\0"
-            VALUE "ProductName", "gratishub" "\0"
+            VALUE "InternalName", "geochef" "\0"
+            VALUE "LegalCopyright", "Copyright (C) 2025 com.zytx121. All rights reserved." "\0"
+            VALUE "OriginalFilename", "geochef.exe" "\0"
+            VALUE "ProductName", "geochef" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

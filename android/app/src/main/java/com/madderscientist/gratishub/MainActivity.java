@@ -1,4 +1,4 @@
-package com.madderscientist.gratishub;
+package com.zytx121.geochef;
 
 import io.flutter.embedding.android.FlutterActivity;
 
