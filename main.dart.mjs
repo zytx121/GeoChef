@@ -809,6 +809,8 @@ class CompiledApp {
       _10696: (x0,x1) => { x0.border = x1 },
       _11138: (x0,x1) => { x0.height = x1 },
       _11462: (x0,x1) => { x0.pointerEvents = x1 },
+      _11760: (x0,x1) => { x0.transform = x1 },
+      _11764: (x0,x1) => { x0.transformOrigin = x1 },
       _11828: (x0,x1) => { x0.width = x1 },
       _12196: x0 => x0.name,
       _12197: x0 => x0.message,
