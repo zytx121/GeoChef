@@ -46,7 +46,7 @@ class UserInfoSide {
         final String avatarUrl =
             getField('avatar_url') ??
             'https://avatars.githubusercontent.com/u/0?v=4'; // 默认头像
-        final String login = getField('login') ?? user;
+        final String login = getField('name') ?? user;
         final String bio = getField('bio') ?? '';
         final String? gitUrl = getField('html_url');
         const String homepage = 'http://zhouyue.space/';

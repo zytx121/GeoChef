@@ -1,11 +1,11 @@
 {
-    "name": "GeoChef Issue Blog",
+    "name": "GeoChef",
     "short_name": "geochef",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#ffffff",
     "theme_color": "#e040fb",
-    "description": "Github Issue Blog Framework",
+    "description": "GeoChef represents a paradigm revolution in the field of remote sensing AI model training. Here, every user is a creative \"GeoAI Chef,\" and we are your most reliable intelligent kitchen assistant. Welcome to GeoChef—let's use the most suitable \"data ingredients\" to cook up the next generation of world-changing remote sensing intelligence systems!",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
