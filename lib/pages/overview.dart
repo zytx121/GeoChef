@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'dart:ui';
+import 'package:flutter/foundation.dart';
 import 'package:material_charts/material_charts.dart';
 import 'package:flutter/material.dart';
 import 'package:geochef/github_request.dart';
@@ -7,6 +8,7 @@ import '../lazy_notifier.dart';
 import '../common.dart';
 import '../config.dart';
 import '../theme.dart';
+import './visit_map/visit_map.dart';
 
 /// issue统计概览页面 侧边栏可自定义
 /// 需要搭配 https://github.com/zytx121/issueStats 使用
@@ -79,7 +81,11 @@ class _OverviewPageState extends State<OverviewPage>
     return SingleChildScrollView(
       child: Column(
         children: [
-          _buildBanner(context),
+          Image.asset(
+          'assets/bg.png',
+          width: MediaQuery.of(context).size.width,
+          fit: BoxFit.cover,
+        ),
           Padding(
             padding: EdgeInsets.all(
               Theme.of(context).textTheme.titleMedium?.fontSize ?? 17.0,
@@ -102,6 +108,7 @@ class _OverviewPageState extends State<OverviewPage>
                 ),
                 _buildTopLabels(context),
                 _buildLabelDistributionChart(context),
+                _buildVisitMap(context),
               ],
             ),
           ),
@@ -307,50 +314,11 @@ class _OverviewPageState extends State<OverviewPage>
     );
   }
 
-  Widget _buildBanner(BuildContext context) {
-    return Stack(
-      children: [
-        Image.asset(
-          'assets/bg.png',
-          width: MediaQuery.of(context).size.width,
-          fit: BoxFit.cover,
-        ),
-        Positioned.fill(
-          child: Center(
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(12), // 设置圆角裁剪
-              child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 4, sigmaY: 4),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 8,
-                  ),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12), // 圆角背景
-                    color: Colors.white.withAlpha(25),
-                  ),
-                  child: Text(
-                    'GeoChef',
-                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      shadows: const [
-                        Shadow(
-                          offset: Offset(0, 2),
-                          blurRadius: 6,
-                          color: Colors.black45,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ),
-      ],
-    );
+  Widget _buildVisitMap(BuildContext context) {
+    if (kIsWeb == false) {
+      return const SizedBox.shrink();
+    }
+    return VisitMap(src: '//clustrmaps.com/globe.js?d=aTs2G96jVg3OE7Fi4QsvOITD0NJ63gc2c6HSkUFpnW0');
   }
 }
 

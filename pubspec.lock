@@ -316,10 +316,10 @@ packages:
     dependency: "direct main"
     description:
       name: material_charts
-      sha256: "168438ff568412a71f68d0b9ee7ddee5d7961ed4e27d001266a78111c500433d"
+      sha256: d6a96295abe39eeef42cc6c49e4f2af69c91abd0b6b0c8f46d8ff5b48531e5a9
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.0.38"
+    version: "0.0.39"
   material_color_utilities:
     dependency: transitive
     description:
@@ -481,10 +481,10 @@ packages:
     dependency: transitive
     description:
       name: url_launcher_android
-      sha256: c0fb544b9ac7efa10254efaf00a951615c362d1ea1877472f8f6c0fa00fcf15b
+      sha256: "5c8b6c2d89a78f5a1cca70a73d9d5f86c701b36b42f9c9dac7bad592113c28e9"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "6.3.23"
+    version: "6.3.24"
   url_launcher_ios:
     dependency: transitive
     description:
@@ -585,10 +585,10 @@ packages:
     dependency: transitive
     description:
       name: video_player_android
-      sha256: "6cfe0b1e102522eda1e139b82bf00602181c5844fd2885340f595fb213d74842"
+      sha256: a8dc4324f67705de057678372bedb66cd08572fe7c495605ac68c5f503324a39
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "2.8.14"
+    version: "2.8.15"
   video_player_avfoundation:
     dependency: transitive
     description:
@@ -601,10 +601,10 @@ packages:
     dependency: transitive
     description:
       name: video_player_platform_interface
-      sha256: cf2a1d29a284db648fd66cbd18aacc157f9862d77d2cc790f6f9678a46c1db5a
+      sha256: "9e372520573311055cb353b9a0da1c9d72b094b7ba01b8ecc66f28473553793b"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "6.4.0"
+    version: "6.5.0"
   video_player_web:
     dependency: transitive
     description:

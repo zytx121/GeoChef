@@ -48,7 +48,10 @@ class UserInfoSide {
             'https://avatars.githubusercontent.com/u/0?v=4'; // 默认头像
         final String login = getField('login') ?? user;
         final String bio = getField('bio') ?? '';
-        final String? htmlUrl = getField('html_url');
+        final String? gitUrl = getField('html_url');
+        const String homepage = 'http://zhouyue.space/';
+        const String googleScholar =
+            'https://scholar.google.com/citations?user=v-aQ8GsAAAAJ';
 
         return CenterOrScroll(
           child: Column(
@@ -56,11 +59,12 @@ class UserInfoSide {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: [
+              // 进入个人主页的头像
               MouseRegion(
                 cursor: SystemMouseCursors.click,
                 child: GestureDetector(
                   onTap: () {
-                    if (htmlUrl != null) launchUrl(Uri.parse(htmlUrl));
+                    launchUrl(Uri.parse(homepage));
                   },
                   child: CircleAvatar(
                     radius: AvatarRadius,
@@ -70,8 +74,15 @@ class UserInfoSide {
                 ),
               ),
               const SizedBox(height: 12),
-              SelectableText(login, style: Theme.of(context).textTheme.titleLarge),
+              // 用户名
+              SelectableText(
+                login,
+                style: Theme.of(
+                  context,
+                ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+              ),
               const SizedBox(height: 12),
+              // 个人简介
               ConstrainedBox(
                 constraints: const BoxConstraints(
                   maxWidth: AvatarRadius * 2 * 2,
@@ -83,6 +94,67 @@ class UserInfoSide {
                   ).textTheme.bodyMedium?.copyWith(color: Colors.grey[700]),
                   textAlign: TextAlign.center,
                 ),
+              ),
+              const SizedBox(height: 12),
+              // 一些链接
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                spacing: 4,
+                children: [
+                  IconButton(
+                    onPressed: () => launchUrl(Uri.parse(homepage)),
+                    icon: const Icon(Icons.home),
+                    iconSize: 24,
+                    padding: EdgeInsets.zero,
+                    splashRadius: 24,
+                    tooltip: "Homepage",
+                  ),
+                  IconButton(
+                    onPressed: gitUrl == null
+                        ? null
+                        : () => launchUrl(Uri.parse(gitUrl)),
+                    icon: Image.asset(
+                      'assets/github.png',
+                      width: 24,
+                      height: 24,
+                      fit: BoxFit.contain,
+                    ),
+                    tooltip: 'GitHub',
+                  ),
+                  IconButton(
+                    onPressed: gitUrl == null
+                        ? null
+                        : () => launchUrl(Uri.parse(googleScholar)),
+                    icon: Image.asset(
+                      'assets/google_scholar.png',
+                      width: 24,
+                      height: 24,
+                      fit: BoxFit.contain,
+                    ),
+                    tooltip: 'Google Scholar',
+                  ),
+                ],
+              ),
+              // 微信公众号
+              const SizedBox(height: 12),
+              Column(
+                children: [
+                  Text(
+                    "大模型饲养员",
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                  Text(
+                    "微信公众号",
+                    style: Theme.of(
+                      context,
+                    ).textTheme.titleSmall?.copyWith(color: Colors.grey[600]),
+                  ),
+                  Image.asset(
+                    'assets/wx.png',
+                    width: AvatarRadius * 1.5,
+                    fit: BoxFit.contain,
+                  ),
+                ],
               ),
             ],
           ),
