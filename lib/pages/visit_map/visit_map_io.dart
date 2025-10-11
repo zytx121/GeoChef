@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 class VisitMap extends StatefulWidget {
-  const VisitMap({super.key});
+  final String src;
+  final String id;
+  const VisitMap({super.key, required this.src, required this.id});
 
   @override
   State<VisitMap> createState() => _VisitMapState();

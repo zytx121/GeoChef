@@ -1,5 +1,4 @@
 import 'dart:math';
-import 'dart:ui';
 import 'package:flutter/foundation.dart';
 import 'package:material_charts/material_charts.dart';
 import 'package:flutter/material.dart';
@@ -82,10 +81,10 @@ class _OverviewPageState extends State<OverviewPage>
       child: Column(
         children: [
           Image.asset(
-          'assets/bg.png',
-          width: MediaQuery.of(context).size.width,
-          fit: BoxFit.cover,
-        ),
+            'assets/bg.png',
+            width: MediaQuery.of(context).size.width,
+            fit: BoxFit.cover,
+          ),
           Padding(
             padding: EdgeInsets.all(
               Theme.of(context).textTheme.titleMedium?.fontSize ?? 17.0,
@@ -99,15 +98,31 @@ class _OverviewPageState extends State<OverviewPage>
                     context,
                   ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
                 ),
-                SizedBox(
-                  height: Theme.of(context).textTheme.titleMedium?.fontSize,
+                Padding(
+                  padding: EdgeInsets.symmetric(
+                    vertical:
+                        Theme.of(context).textTheme.titleMedium?.fontSize ?? 17,
+                  ),
+                  child: _buildLastCreated(context),
                 ),
-                _buildLastCreated(context),
+                _buildTopLabels(context),
                 SizedBox(
                   height: Theme.of(context).textTheme.titleLarge?.fontSize,
                 ),
-                _buildTopLabels(context),
+                Text(
+                  'Label Distribution',
+                  style: Theme.of(
+                    context,
+                  ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+                ),
                 _buildLabelDistributionChart(context),
+                if (kIsWeb == true)
+                  Text(
+                    'Visitor Map',
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 _buildVisitMap(context),
               ],
             ),
@@ -253,64 +268,53 @@ class _OverviewPageState extends State<OverviewPage>
       return const Center(child: Text('暂无标签数据'));
     }
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Label Distribution',
-          style: Theme.of(
-            context,
-          ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
-        ),
-        LayoutBuilder(
-          builder: (context, constraints) {
-            // 考虑padding，用LayoutBuilder取最大宽度
-            final double maxWidth = constraints.maxWidth;
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        // 考虑padding，用LayoutBuilder取最大宽度
+        final double maxWidth = constraints.maxWidth;
 
-            // 不显示legend，因为这个库不够完善
-            // label向两侧，所以高度比宽度小
-            final double chartWidth = maxWidth;
-            final double chartHeight = chartWidth / 2.2;
+        // 不显示legend，因为这个库不够完善
+        // label向两侧，所以高度比宽度小
+        final double chartWidth = maxWidth;
+        final double chartHeight = chartWidth / 2.2;
 
-            return MaterialPieChart(
-              data: data,
-              width: chartWidth,
-              height: chartHeight,
-              minSizePercent: 0.0,
-              chartRadius: chartWidth * 0.125,
-              style: PieChartStyle(
-                defaultColors: defaultColors,
-                backgroundColor: Colors.transparent,
-                startAngle: -180.0,
-                holeRadius: 0.0,
-                animationDuration: const Duration(milliseconds: 1000),
-                animationCurve: Curves.easeOutCubic,
-                showLabels: true,
-                showValues: true,
-                labelOffset: 10.0,
-                showLegend: false,
-                legendPosition: PieChartLegendPosition.right,
-                labelPosition: LabelPosition.outside,
-                showConnectorLines: true,
-                connectorLineColor: Colors.black54,
-                connectorLineStrokeWidth: 1.0,
-                chartAlignment: ChartAlignment.center,
-                labelStyle: Theme.of(context).textTheme.labelMedium?.copyWith(
-                  color: Colors.black87,
-                  fontWeight: FontWeight.w500,
-                ),
-                valueStyle: Theme.of(context).textTheme.labelMedium?.copyWith(
-                  color: Colors.black54,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              interactive: true,
-              showLabelOnlyOnHover: false,
-              padding: const EdgeInsets.all(0),
-            );
-          },
-        ),
-      ],
+        return MaterialPieChart(
+          data: data,
+          width: chartWidth,
+          height: chartHeight,
+          minSizePercent: 0.0,
+          chartRadius: chartWidth * 0.125,
+          style: PieChartStyle(
+            defaultColors: defaultColors,
+            backgroundColor: Colors.transparent,
+            startAngle: -180.0,
+            holeRadius: 0.0,
+            animationDuration: const Duration(milliseconds: 1000),
+            animationCurve: Curves.easeOutCubic,
+            showLabels: true,
+            showValues: true,
+            labelOffset: 10.0,
+            showLegend: false,
+            legendPosition: PieChartLegendPosition.right,
+            labelPosition: LabelPosition.outside,
+            showConnectorLines: true,
+            connectorLineColor: Colors.black54,
+            connectorLineStrokeWidth: 1.0,
+            chartAlignment: ChartAlignment.center,
+            labelStyle: Theme.of(context).textTheme.labelMedium?.copyWith(
+              color: Colors.black87,
+              fontWeight: FontWeight.w500,
+            ),
+            valueStyle: Theme.of(context).textTheme.labelMedium?.copyWith(
+              color: Colors.black54,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          interactive: true,
+          showLabelOnlyOnHover: false,
+          padding: const EdgeInsets.all(0),
+        );
+      },
     );
   }
 
@@ -318,7 +322,11 @@ class _OverviewPageState extends State<OverviewPage>
     if (kIsWeb == false) {
       return const SizedBox.shrink();
     }
-    return VisitMap(src: '//clustrmaps.com/globe.js?d=aTs2G96jVg3OE7Fi4QsvOITD0NJ63gc2c6HSkUFpnW0');
+    return VisitMap(
+      src:
+          '//clustrmaps.com/globe.js?d=aTs2G96jVg3OE7Fi4QsvOITD0NJ63gc2c6HSkUFpnW0',
+      id: 'clstr_globe',
+    );
   }
 }
 

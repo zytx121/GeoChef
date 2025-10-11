@@ -148,7 +148,7 @@
     }
   </style>
 
-  <title>GeoChef Issue Blog</title>
+  <title>GeoChef</title>
   <link rel="manifest" href="manifest.json">
 </head>
 
@@ -319,6 +319,20 @@
     function onKey(ev) { if (ev.key === 'Escape') close(); }
     document.addEventListener('keydown', onKey);
   }
+
+  // 后续注册到onload的事件会被立即执行
+  window.addEventListener('load', (e) => {
+    const oldAdd = window.addEventListener;
+    window.addEventListener = function (type, fn, options) {
+      if (type === 'load' && typeof fn === 'function') {
+        setTimeout(() => {
+          fn.call(window, e);
+        }, 0);
+      } else {
+        oldAdd.call(window, type, fn, options);
+      }
+    };
+  });
 </script>
 
 </html>
