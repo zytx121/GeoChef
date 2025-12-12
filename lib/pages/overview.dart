@@ -178,7 +178,7 @@ class _OverviewPageState extends State<OverviewPage>
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          '热门领域 Top$topN',
+          'Top $topN Hot Fields',
           style: Theme.of(
             context,
           ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),

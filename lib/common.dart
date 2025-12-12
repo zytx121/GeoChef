@@ -6,6 +6,8 @@ import 'package:markdown_widget/markdown_widget.dart';
 import 'markdown_custom/video.dart';
 import 'markdown_custom/more_img.dart';
 import 'markdown_custom/custom_node.dart';
+import 'markdown_custom/link.dart';
+import 'markdown_custom/table.dart';
 
 typedef WBuilder = Widget Function(BuildContext);
 WBuilder emptyBuilder = (context) => const SizedBox.shrink();
@@ -62,9 +64,10 @@ void showError(String msg) {
   );
 }
 
+// generators可以自定义节点以覆盖原实现，在自定义节点中可以遍历子元素
 final mdHtmlSupport = MarkdownGenerator(
-  generators: [videoGeneratorWithTag, moreImgGenerator],
+  generators: [videoGeneratorWithTag, moreImgGenerator, linkGenerator, tableGenerator],
   textGenerator: (node, config, visitor) =>
       CustomTextNode(node.textContent, config, visitor),
-  richTextBuilder: (span) => Text.rich(span),
+  richTextBuilder: (span) => RichText(text: span),
 );

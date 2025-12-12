@@ -5,6 +5,11 @@ import 'package:markdown_widget/markdown_widget.dart';
 
 import 'html_support.dart';
 
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter/foundation.dart';
+import 'web_image/web_image.dart';
+
+// 处理html表格，对其中的图片进一步定制
 class CustomTextNode extends ElementNode {
   final String text;
   final MarkdownConfig config;
@@ -16,13 +21,52 @@ class CustomTextNode extends ElementNode {
   @override
   InlineSpan build() {
     if (isTable) {
-      //deal complex table tag with html core widget
+      // deal complex table tag with html core widget
       return WidgetSpan(
-        child: HtmlWidget(text),
+        child: HtmlWidget(
+          text,
+          customWidgetBuilder: (element) {
+            if (element.localName == 'img') {
+              final src = element.attributes['src'] ?? '';
+              final width = double.tryParse(element.attributes['width'] ?? '');
+              final height = double.tryParse(
+                element.attributes['height'] ?? '',
+              );
+              if (kIsWeb == true) {
+                return LayoutBuilder(
+                  // 和markdown widget不同，HTML的表格允许使用layoutbuilder
+                  builder: (context, constraints) {
+                    return WebImage(
+                      url: src,
+                      width: width,
+                      height: height,
+                      allowClickToEnlarge: true,
+                      maxWidth: constraints.maxWidth,
+                    );
+                  },
+                );
+              }
+              if (src.toLowerCase().contains('.svg')) {
+                return SvgPicture.network(
+                  src,
+                  width: width,
+                  height: height,
+                  fit: BoxFit.contain,
+                  clipBehavior: Clip.none,
+                  placeholderBuilder: (BuildContext context) => SizedBox(
+                    width: width,
+                    height: height,
+                    child: const Center(child: CircularProgressIndicator()),
+                  ),
+                );
+              }
+            }
+            return null; // 使用默认
+          },
+        ),
       );
-    } else {
-      return super.build();
     }
+    return super.build();
   }
 
   @override

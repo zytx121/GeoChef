@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:markdown_widget/widget/widget_visitor.dart';
+import 'package:markdown_widget/markdown_widget.dart';
 
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:markdown_widget/widget/inlines/img.dart';
 
 import 'package:flutter/foundation.dart';
 import 'web_image/web_image.dart';
@@ -16,7 +15,8 @@ final moreImgGenerator = SpanNodeGeneratorWithTag(
     // 如果没有跨域或http问题，可以注释下一行
     if (kIsWeb == true) return SvgNode(attr, config, visitor);
 
-    if (src.toLowerCase().endsWith('.svg')) {
+    if (src.toLowerCase().contains('.svg')) {
+      // 不一定在末尾
       return SvgNode(attr, config, visitor);
     }
     return ImageNode(attr, config, visitor);
@@ -25,7 +25,15 @@ final moreImgGenerator = SpanNodeGeneratorWithTag(
 
 /// 不仅支持SVG，在web还能用img标签，使得图片可以跨域
 class SvgNode extends ImageNode {
-  SvgNode(super.attributes, super.config, super.visitor);
+  bool clickToEnlarge;
+  VoidCallback? onTap;
+  SvgNode(
+    super.attributes,
+    super.config,
+    super.visitor, {
+    this.clickToEnlarge = true,
+    this.onTap,
+  });
 
   @override
   InlineSpan build() {
@@ -41,7 +49,30 @@ class SvgNode extends ImageNode {
     late final Widget result;
     // 如果是web平台，使用WebImage获取完全的兼容和跨域支持
     if (kIsWeb == true) {
-      result = WebImage(url: imageUrl, width: width, height: height, allowClickToEnlarge: true);
+      if (attributes['inTable'] == '1') {
+        // table内的图片不能用layoutbuilder，必须给定最大宽度
+        result = WebImage(
+          url: imageUrl,
+          width: width,
+          height: height,
+          allowClickToEnlarge: clickToEnlarge,
+          maxWidth: 1024,
+          onTap: onTap,
+        );
+      } else {
+        result = LayoutBuilder(
+          builder: (context, constraints) {
+            return WebImage(
+              url: imageUrl,
+              width: width,
+              height: height,
+              allowClickToEnlarge: clickToEnlarge,
+              maxWidth: constraints.maxWidth,
+              onTap: onTap,
+            );
+          },
+        );
+      }
     } else {
       // SVG会显示异常 疑似是插件的问题
       final temp = SvgPicture.network(
@@ -58,7 +89,10 @@ class SvgNode extends ImageNode {
         builder: (context) {
           return InkWell(
             child: Hero(tag: result.hashCode, child: temp),
-            onTap: () => _showImage(context, temp),
+            onTap: () {
+              if (clickToEnlarge) _showImage(context, temp);
+              onTap?.call();
+            },
           );
         },
       );
@@ -74,5 +108,15 @@ class SvgNode extends ImageNode {
         pageBuilder: (_, _, _) => ImageViewer(child: child),
       ),
     );
+  }
+}
+
+void recursivelySetSvgNodeInTable(SpanNode node) {
+  if (node is SvgNode) {
+    node.attributes['inTable'] = '1';
+  } else if (node is ElementNode) {
+    for (final child in node.children) {
+      recursivelySetSvgNodeInTable(child);
+    }
   }
 }

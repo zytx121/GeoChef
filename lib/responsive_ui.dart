@@ -36,19 +36,6 @@ class _ResponsiveUIState extends State<ResponsiveUI> {
   // 改顺序只需要改index
   late final List<_PageWithIcon> pages = [
     _PageWithIcon(
-      title: 'Readme',
-      icon: Icons.book,
-      page: ReadmePage(
-        key: const ValueKey('readme'),
-        // sideBuilder: userInfoSide.build, // 也可以自定义侧边栏
-        sideConfig: sideConfig,
-        pageIndex: pageIndex,
-        index: 1,
-        // owner: Config.owner, // 不传默认也是Config.owner
-        // repo: Config.repo,
-      ),
-    ),
-    _PageWithIcon(
       title: 'Overview',
       icon: Icons.bar_chart,
       page: OverviewPage(
@@ -57,8 +44,21 @@ class _ResponsiveUIState extends State<ResponsiveUI> {
         sideConfig: sideConfig,
         pageIndex: pageIndex,
         index: 0,
-        owner: 'madderscientist',
-        repo: 'issueStat',
+        // owner: Config.owner,
+        // repo: Config.repo,
+      ),
+    ),
+    _PageWithIcon(
+      title: 'Readme',
+      icon: Icons.book,
+      page: ReadmePage(
+        key: const ValueKey('readme'),
+        // sideBuilder: userInfoSide.build, // 也可以自定义侧边栏
+        sideConfig: sideConfig,
+        pageIndex: pageIndex,
+        index: 1,
+        // owner: Config.owner,
+        // repo: Config.repo,
       ),
     ),
     _PageWithIcon(
@@ -69,8 +69,8 @@ class _ResponsiveUIState extends State<ResponsiveUI> {
         sideConfig: sideConfig,
         pageIndex: pageIndex,
         index: 2,
-        owner: Config.owner,
-        repo: Config.repo,
+        // owner: Config.owner,
+        // repo: Config.repo,
       ),
     ),
   ]..sort((a, b) => a.page.index.compareTo(b.page.index));

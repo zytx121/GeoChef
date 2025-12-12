@@ -15,6 +15,8 @@ class WebImage extends StatefulWidget {
   final String url;
   final double? width;
   final double? height;
+  final double? maxWidth;
+  final void Function()? onTap; // 由于HtmlElementView不能响应点击，所以需要一个透明的手势层
   final bool allowClickToEnlarge;
 
   const WebImage({
@@ -22,6 +24,8 @@ class WebImage extends StatefulWidget {
     this.url = '',
     this.width,
     this.height,
+    this.maxWidth,
+    this.onTap,
     this.allowClickToEnlarge = true,
   });
 
@@ -82,52 +86,48 @@ class _WebImageState extends State<WebImage> {
     return ValueListenableBuilder<List<double?>>(
       valueListenable: sizeNotifier,
       builder: (context, size, child) {
-        return LayoutBuilder(
-          builder: (context, constraints) {
-            double maxWidth = constraints.maxWidth;
-            double w = widget.width ?? size[0] ?? 24;
-            double h = widget.height ?? size[1] ?? 24;
-            if (w > maxWidth) {
-              h = maxWidth / w * h;
-              w = maxWidth;
-            }
-            // 推迟能解决横竖屏切换时img大小和SizedBox不一致的问题
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              final img =
-                  web.document.getElementById(_viewType)
-                      as web.HTMLImageElement?;
-              if (img != null) {
-                img.style.width = '${w}px';
-                img.style.height = '${h}px';
-              }
-            });
-            const block = SizedBox.expand();
-            return SizedBox(
-              width: w,
-              height: h,
-              child: Stack(
-                // 放一个透明的手势层在上面，防止穿透
-                children: [
-                  HtmlElementView(
-                    key: ValueKey(_viewType),
-                    viewType: _viewType,
+        double maxWidth = widget.maxWidth ?? double.infinity;
+        double w = widget.width ?? size[0] ?? 24;
+        double h = widget.height ?? size[1] ?? 24;
+        if (w > maxWidth) {
+          h = maxWidth / w * h;
+          w = maxWidth;
+        }
+        // 推迟能解决横竖屏切换时img大小和SizedBox不一致的问题
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          final img =
+              web.document.getElementById(_viewType) as web.HTMLImageElement?;
+          if (img != null) {
+            img.style.width = '${w}px';
+            img.style.height = '${h}px';
+          }
+        });
+        return SizedBox(
+          width: w,
+          height: h,
+          child: Stack(
+            // 放一个透明的手势层在上面，防止穿透
+            children: [
+              // HtmlElementView 即使有遮罩、遮罩没有onTap，也无法响应父元素的点击事件
+              HtmlElementView(key: ValueKey(_viewType), viewType: _viewType),
+              Positioned.fill(
+                child: MouseRegion(
+                  cursor: SystemMouseCursors.click,
+                  child: GestureDetector(
+                    onTap: () {
+                      if (widget.allowClickToEnlarge) {
+                        showImageOverlay(_viewType);
+                      }
+                      widget.onTap?.call();
+                    },
+                    onLongPress: () => showImageOverlay(_viewType),
+                    behavior: HitTestBehavior.translucent,
+                    child: SizedBox.expand(),
                   ),
-                  Positioned.fill(
-                    child: widget.allowClickToEnlarge
-                        ? MouseRegion(
-                            cursor: SystemMouseCursors.click,
-                            child: GestureDetector(
-                              onTap: () => showImageOverlay(_viewType),
-                              behavior: HitTestBehavior.translucent,
-                              child: block,
-                            ),
-                        )
-                        : block,
-                  ),
-                ],
+                ),
               ),
-            );
-          },
+            ],
+          ),
         );
       },
     );
