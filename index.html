@@ -351,7 +351,7 @@ _flutter.buildConfig = {"engineRevision":"a5cb96369ef86c7e85abf5d662a1ca5d897750
     }
 
     // 点击 clone 或 overlay 关闭
-    overlay.addEventListener('click', (ev) => { close(); });
+    overlay.addEventListener('pointerup', (ev) => { close(); });
     function onKey(ev) { if (ev.key === 'Escape') close(); }
     document.addEventListener('keydown', onKey);
   }
