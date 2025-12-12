@@ -315,7 +315,7 @@
     }
 
     // 点击 clone 或 overlay 关闭
-    overlay.addEventListener('click', (ev) => { close(); });
+    overlay.addEventListener('pointerup', (ev) => { close(); });
     function onKey(ev) { if (ev.key === 'Escape') close(); }
     document.addEventListener('keydown', onKey);
   }

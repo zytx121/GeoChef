@@ -66,8 +66,9 @@ void showError(String msg) {
 
 // generators可以自定义节点以覆盖原实现，在自定义节点中可以遍历子元素
 final mdHtmlSupport = MarkdownGenerator(
-  generators: [videoGeneratorWithTag, moreImgGenerator, linkGenerator, tableGenerator],
+  generators: [videoGeneratorWithTag, moreImgGenerator, linkGenerator, tableGenerator, divGenerator],
   textGenerator: (node, config, visitor) =>
       CustomTextNode(node.textContent, config, visitor),
   richTextBuilder: (span) => RichText(text: span),
+  blockSyntaxList: [DivBlockSyntax()],
 );
