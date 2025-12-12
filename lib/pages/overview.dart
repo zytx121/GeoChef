@@ -242,9 +242,42 @@ class _OverviewPageState extends State<OverviewPage>
     );
   }
 
+  /// 融合Top-N和百分比的标签合并方案
+  /// 返回合并后的标签列表，后面合并为“其他”
+  List<MapEntry<String, int>> getMergedLabelList({
+    required Map<String, int> labels,
+    String otherLabel = 'others',
+    double maxTailPercent = 0.025,
+    int minKeep = 10,
+  }) {
+    if (labels.isEmpty) return [];
+    final sorted = labels.entries.toList()
+      ..sort((a, b) => b.value.compareTo(a.value));
+    final total = sorted.fold<int>(0, (sum, e) => sum + e.value);
+    if (total == 0) return sorted;
+    final List<MapEntry<String, int>> major = [];
+    int othersSum = 0;
+    for (int i = 0; i < sorted.length; i++) {
+      final entry = sorted[i];
+      // 保证前minKeep个都保留
+      if (i < minKeep) {
+        major.add(entry);
+      } else if (entry.value / total < maxTailPercent) {
+        othersSum += entry.value;
+      } else {
+        major.add(entry);
+      }
+    }
+    if (othersSum > 0) {
+      major.add(MapEntry(otherLabel, othersSum));
+    }
+    return major;
+  }
+
   Widget _buildLabelDistributionChart(BuildContext context) {
     // 构造 PieChartData 列表
-    final labelList = stat!.labels.entries.toList();
+    // final labelList = stat!.labels.entries.toList();
+    final labelList = getMergedLabelList(labels: stat!.labels);
 
     // 生成和 labelList 长度一致的同一色系颜色
     final baseColor = AppTheme.themeColor;
