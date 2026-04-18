@@ -34,7 +34,7 @@ class AppTheme {
   /// 响应式文字主题，根据屏幕宽度调整文字大小
   static TextTheme responsiveTextTheme(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
-    final double s = min(min(AppTheme.maxPageWidth,size.width), size.height);
+    final double s = min(min(AppTheme.maxPageWidth, size.width), size.height);
     final double screenScale = _ratialCurve(s / 375); // IPhone 8 宽度 375px
     final double textScale = screenScale;
 

@@ -5,6 +5,8 @@ class WebImage extends StatelessWidget {
   final String url;
   final double? width;
   final double? height;
+  final double? maxWidth;
+  final void Function()? onTap;
   final bool allowClickToEnlarge;
 
   const WebImage({
@@ -12,6 +14,8 @@ class WebImage extends StatelessWidget {
     this.url = '',
     this.width,
     this.height,
+    this.maxWidth,
+    this.onTap,
     this.allowClickToEnlarge = false,
   });
 

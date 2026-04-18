@@ -51,6 +51,8 @@ class _WebImageState extends State<WebImage> {
       img.id = _viewType;
       img.src = widget.url;
       img.style
+        ..width = '100%'
+        ..height = '100%'
         ..maxWidth = '100%'
         ..maxHeight = '100%'
         ..display = 'block'

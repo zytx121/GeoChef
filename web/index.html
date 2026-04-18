@@ -181,12 +181,32 @@
   {{flutter_js}}
   {{flutter_build_config}}
 
+  function canReachBaseUrl(url, timeoutMs = 1800) {
+    const probeUrl = `${url}?_=${Date.now()}`;
+    const timeoutPromise = new Promise((_, reject) => {
+      setTimeout(() => reject(new Error('timeout')), timeoutMs);
+    });
+    // no-cors 下成功会返回 opaque，但可用于判定“可连通”；失败会抛异常。
+    return Promise.race([
+      fetch(probeUrl, { mode: 'no-cors', cache: 'no-store' }),
+      timeoutPromise,
+    ]).then(() => true).catch(() => false);
+  }
+  const cnFontFallbackBaseUrl = 'https://fonts.gstatic.cn/s/';
+  const canReachGStatic = canReachBaseUrl(cnFontFallbackBaseUrl);
+
   _flutter.loader.load({
+    config: {
+      'canvasKitBaseUrl': 'canvaskit/',  // 【重要】使用本地的canvaskit资源，避免国外CDN加载失败 必须用相对路径
+      // 'renderer': 'skwasm',
+    },
     // 加载动画管理
-    onEntrypointLoaded: function (engineInitializer) {
-      engineInitializer.initializeEngine({
-        useColorEmoji: true,
-      }).then(function (appRunner) {
+    onEntrypointLoaded: async function (engineInitializer) {
+      const cfg = { useColorEmoji: true };
+      if (await canReachGStatic) {
+        cfg.fontFallbackBaseUrl = cnFontFallbackBaseUrl;
+      } else console.warn('无法访问 ' + cnFontFallbackBaseUrl + '，将使用默认地址');
+      engineInitializer.initializeEngine(cfg).then(function (appRunner) {
         appRunner.runApp();
         document.getElementById('anim_loading').style.display = 'none';
       });

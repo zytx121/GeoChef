@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:markdown_widget/markdown_widget.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -19,9 +20,78 @@ final moreImgGenerator = SpanNodeGeneratorWithTag(
       // 不一定在末尾
       return SvgNode(attr, config, visitor);
     }
-    return ImageNode(attr, config, visitor);
+    return CachedHeaderImageNode(attr, config, visitor);
   },
 );
+
+void _showImageViewer(BuildContext context, Widget child) {
+  Navigator.of(context).push(
+    PageRouteBuilder(
+      opaque: false,
+      pageBuilder: (_, __, ___) => ImageViewer(child: child),
+    ),
+  );
+}
+
+/// 点击放大
+Widget _wrapWithImagePreview({
+  required Widget child,
+  required bool enableTapToEnlarge,
+  VoidCallback? onTap,
+}) {
+  return Builder(
+    builder: (context) {
+      return InkWell(
+        child: Hero(tag: child.hashCode, child: child),
+        onTap: () {
+          if (enableTapToEnlarge) _showImageViewer(context, child);
+          onTap?.call();
+        },
+      );
+    },
+  );
+}
+
+const Map<String, String> networkImageHeaders = {
+  'User-Agent':
+      'Mozilla/5.0 (Linux; Android 14; Mobile) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Mobile Safari/537.36',
+};
+
+/// Image.network会被网易云这种拦截，即使加上header。必须CachedNetworkImageProvider加header
+class CachedHeaderImageNode extends ImageNode {
+  CachedHeaderImageNode(super.attributes, super.config, super.visitor);
+
+  @override
+  InlineSpan build() {
+    final imageUrl = attributes['src'] ?? '';
+    final isNetImage = imageUrl.startsWith('http');
+
+    if (kIsWeb || !isNetImage) return super.build();
+
+    final width = double.tryParse(attributes['width'] ?? '');
+    final height = double.tryParse(attributes['height'] ?? '');
+    final alt = attributes['alt'] ?? '';
+
+    final imgWidget = CachedNetworkImage(
+      imageUrl: imageUrl,
+      httpHeaders: networkImageHeaders,
+      width: width,
+      height: height,
+      fit: BoxFit.cover,
+      progressIndicatorBuilder: (context, url, downloadProgress) =>
+          CircularProgressIndicator(value: downloadProgress.progress),
+      errorWidget: (ctx, url, error) {
+        return buildErrorImage(imageUrl, alt, error);
+      },
+    );
+
+    final result = (parent != null && parent is LinkNode)
+        ? imgWidget
+        : _wrapWithImagePreview(child: imgWidget, enableTapToEnlarge: true);
+
+    return WidgetSpan(child: result);
+  }
+}
 
 /// 不仅支持SVG，在web还能用img标签，使得图片可以跨域
 class SvgNode extends ImageNode {
@@ -81,33 +151,17 @@ class SvgNode extends ImageNode {
         height: height,
         fit: BoxFit.contain,
         clipBehavior: Clip.none,
+        headers: networkImageHeaders,
         placeholderBuilder: (BuildContext context) =>
             buildErrorImage(imageUrl, attributes['alt'] ?? '', null),
       );
-      // 点击放大
-      result = Builder(
-        builder: (context) {
-          return InkWell(
-            child: Hero(tag: result.hashCode, child: temp),
-            onTap: () {
-              if (clickToEnlarge) _showImage(context, temp);
-              onTap?.call();
-            },
-          );
-        },
+      result = _wrapWithImagePreview(
+        child: temp,
+        enableTapToEnlarge: clickToEnlarge,
+        onTap: onTap,
       );
     }
     return WidgetSpan(child: result);
-  }
-
-  /// show image in a new window
-  void _showImage(BuildContext context, Widget child) {
-    Navigator.of(context).push(
-      PageRouteBuilder(
-        opaque: false,
-        pageBuilder: (_, _, _) => ImageViewer(child: child),
-      ),
-    );
   }
 }
 

@@ -69,6 +69,6 @@ final mdHtmlSupport = MarkdownGenerator(
   generators: [videoGeneratorWithTag, moreImgGenerator, linkGenerator, tableGenerator, divGenerator],
   textGenerator: (node, config, visitor) =>
       CustomTextNode(node.textContent, config, visitor),
-  richTextBuilder: (span) => RichText(text: span),
+  richTextBuilder: (span) => Text.rich(span),
   blockSyntaxList: [DivBlockSyntax()],
 );
