@@ -2,7 +2,14 @@ name: build exe and apk
 
 # action事件触发
 on:
+  push:
+    tags:
+      - "v*"
   workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Release tag (e.g. v1.2.3)'
+        required: true
 
 # 可以有多个jobs
 jobs:
