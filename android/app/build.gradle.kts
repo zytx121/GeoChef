@@ -17,8 +17,7 @@ if (keystorePropertiesFile.exists()) {
 android {
     namespace = "com.zytx121.geochef"
     compileSdk = flutter.compileSdkVersion
-    // ndkVersion = flutter.ndkVersion
-    ndkVersion = "27.0.12077973"    // pref插件要求
+    ndkVersion = flutter.ndkVersion
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
